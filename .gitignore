@@ -1,0 +1,33 @@
+# Secrets: never commit the real key (copy .env.example to .env instead)
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Node / Vite
+node_modules/
+frontend/dist/
+*.tsbuildinfo
+*.local
+
+# Logs, temp and tool files
+*.log
+*.tmp
+*.reset-tmp
+*.json.tmp
+.claude/
+.vscode/
+.DS_Store
+Thumbs.db
+
+# Course materials (not part of the submission)
+HW5_instructions_transcript.*

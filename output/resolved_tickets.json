@@ -1,0 +1,187 @@
+{
+  "problem": 9,
+  "description": "Actual results of running the Campus Customs five-agent team (gpt-6-luna via Portkey) on tickets 101-103 after resetting the working database. Built from output/audit_trail.json, the backend run results, and data/campus_customs_new.db.",
+  "run_date_utc": "2026-10-14",
+  "shop_date": "2026-08-31",
+  "starting_checking_balance": 3400.0,
+  "ending_checking_balance": 160.0,
+  "ending_balance_matches_cash_accounts": true,
+  "tickets": [
+    {
+      "id": 101,
+      "subject": "Bulldog tee",
+      "requester": "Tauhid Zaman",
+      "final_status": "resolved",
+      "run": {
+        "run_id": "0e03a019b82d44a4a7c079be5a059c65",
+        "state": "completed",
+        "boss_resolution_status": "awaiting_human_approval",
+        "model_requests": 26,
+        "total_tokens": 88882
+      },
+      "short_outcome": "Size S tee is out of stock (0 on hand) and the only apparel vendor was blocked by overdue invoice 501. A human approved paying the $840 invoice, which unblocks the vendor. The backend then marked the ticket resolved, but the tee itself has not been ordered or delivered, and the customer reply is only a draft.",
+      "agents": {
+        "boss": "Called Inventory first because stock decides whether the order can ship. Then asked Accounting to verify the bill and Customer Service to draft a reply. Decided awaiting_human_approval for the $840 invoice payment.",
+        "inventory": "Found CC-TEE-WHITE size S has 0 on hand (shortfall 1). Identified Bulldog Print Co (apparel, 5-day lead time) as blocked by open invoice 501 ($840, 3 days overdue). Handed the bill to Accounting.",
+        "accounting": "Confirmed $3,400 in checking and prepared invoice 501 for human approval ($840, leaving $2,560). Its attempt to prepare a 1-tee purchase order was refused by the tool 3 times because the vendor still had an open invoice.",
+        "customer_service": "Drafted (did not send) a reply to Tauhid Zaman: size S is out of stock and there is no confirmed restock date. Re-verified the facts through Inventory first. The draft's apostrophes have a character-encoding glitch."
+      },
+      "delegations": [
+        "boss -> inventory",
+        "inventory -> accounting",
+        "boss -> accounting",
+        "boss -> customer_service",
+        "customer_service -> inventory",
+        "inventory -> accounting"
+      ],
+      "tools_used": [
+        {"tool": "get_tickets", "outcome": "ticket 101 loaded (1 x CC-TEE-WHITE size S, invoice 501)"},
+        {"tool": "get_product_stock_and_price", "outcome": "size S: 0 on hand, needed 1, shortfall 1; cost $8, list $28"},
+        {"tool": "list_vendors", "outcome": "Bulldog Print Co, 5-day lead time, cannot ship (open invoice)"},
+        {"tool": "get_open_vendor_invoices", "outcome": "invoice 501, $840.00, due 2026-08-28, 3 days overdue"},
+        {"tool": "get_cash_balance", "outcome": "checking $3,400.00"},
+        {"tool": "prepare_payment_request", "outcome": "invoice 501: $840.00, balance after $2,560.00, pending_human_approval"},
+        {"tool": "prepare_payment_request", "outcome": "purchase order for 1 tee S refused 3 times: vendor 1 has open invoice 501"}
+      ],
+      "safeguards_triggered": [
+        "10 repeated tool calls served from the run cache",
+        "1 identical repeated call refused (get_product_stock_and_price)",
+        "purchase order refused by the vendor-open-invoice rule"
+      ],
+      "human_approvals": [
+        {
+          "request_id": "93798a378da84a67897ccccdc484fb27",
+          "kind": "invoice",
+          "ref_id": 501,
+          "payee": "Bulldog Print Co",
+          "amount": 840.0,
+          "decision": "approved",
+          "decided_by": "Antonio Chicchón",
+          "decided_at": "2026-10-14T22:03:02.528586Z",
+          "outcome": "paid as payment #1; checking $3,400.00 -> $2,560.00; invoice 501 status paid"
+        }
+      ],
+      "cash_impact": -840.0,
+      "unresolved_issues": [
+        "The tee has not been ordered: a new 1-tee purchase order (about $8) needs a follow-up agent run now that the vendor is unblocked.",
+        "The app cannot record received stock, so size S stays at 0 even after an order.",
+        "The customer reply is a draft only and needs its encoding glitch fixed before a person sends it.",
+        "Resolved is the backend's status after all requests were approved; it overstates the business outcome for the customer."
+      ]
+    },
+    {
+      "id": 102,
+      "subject": "Rent due",
+      "requester": "Elm City Properties",
+      "final_status": "resolved",
+      "run": {
+        "run_id": "8e5b1cd09d994f4cbc505c4fb5904a07",
+        "state": "completed",
+        "boss_resolution_status": "awaiting_human_approval",
+        "model_requests": 7,
+        "total_tokens": 19303
+      },
+      "short_outcome": "Facilities verified the landlord's notice against lease 1 ($2,400 due 2026-09-02, in 2 days). Accounting prepared the rent payment, and a human approved it. Rent is paid and the lease's next due date moved to 2026-10-02. Genuinely resolved.",
+      "agents": {
+        "boss": "Called Facilities first so the notice was verified before any payment. Decided awaiting_human_approval for the $2,400 rent.",
+        "facilities": "Checked lease 1: Chapel Street shop, landlord Elm City Properties, $2,400 due 2026-09-02, 2 days after the shop date, not overdue. Verdict: the notice is consistent (it states no amount). Handed the rent to Accounting.",
+        "accounting": "Confirmed $2,560 in checking and prepared the rent for human approval ($2,400, leaving $160)."
+      },
+      "delegations": [
+        "boss -> facilities",
+        "facilities -> accounting"
+      ],
+      "tools_used": [
+        {"tool": "get_tickets", "outcome": "ticket 102 notice: 'Email: shop rent due in 2 days.'"},
+        {"tool": "get_lease_rent_status", "outcome": "lease 1: $2,400.00 due 2026-09-02, 2 days until due, not overdue"},
+        {"tool": "get_cash_balance", "outcome": "checking $2,560.00"},
+        {"tool": "prepare_payment_request", "outcome": "rent lease 1: $2,400.00, balance after $160.00, pending_human_approval"}
+      ],
+      "safeguards_triggered": [],
+      "human_approvals": [
+        {
+          "request_id": "13fcfaefc9b4404d9fbc8f9ace5104d0",
+          "kind": "rent",
+          "ref_id": 1,
+          "payee": "Elm City Properties",
+          "amount": 2400.0,
+          "decision": "approved",
+          "decided_by": "Antonio Chicchón",
+          "decided_at": "2026-10-14T22:07:46.413541Z",
+          "outcome": "paid as payment #2; checking $2,560.00 -> $160.00; lease 1 next_due 2026-10-02"
+        }
+      ],
+      "cash_impact": -2400.0,
+      "unresolved_issues": []
+    },
+    {
+      "id": 103,
+      "subject": "Bulk hoodie discount",
+      "requester": "Yale AI Club",
+      "final_status": "in_progress",
+      "run": {
+        "run_id": "f433f770199c470facaa611165f8f914",
+        "state": "completed",
+        "boss_resolution_status": "blocked",
+        "model_requests": 11,
+        "total_tokens": 36398
+      },
+      "short_outcome": "Only 8 of 20 size-M hoodies are in stock. The 12-unit restock ($264) could not be covered by the $160 left after tickets 101 and 102, and the club named no discount. The Boss decided blocked. A human declined the unfunded purchase order, so no money moved and the ticket is in progress. Not resolved.",
+      "agents": {
+        "boss": "Called Accounting first (price override, so it checked margin and discount floor), then Inventory. Decided blocked: no price or discount specified, 8 of 20 in stock, restock $104 short. Advised no order or customer commitment.",
+        "accounting": "Reported cost $22, list $58, margin $36 per unit, floor $22, and checking $160. Prepared the 12-hoodie purchase order ($264), which the tool marked as insufficient funds (balance after -$104).",
+        "inventory": "Confirmed 8 on hand (shortfall 12). Found Bulldog Print Co can now ship (no open invoices), 5-day lead time. Handed the restock to Accounting."
+      },
+      "delegations": [
+        "boss -> accounting",
+        "boss -> inventory",
+        "inventory -> accounting"
+      ],
+      "tools_used": [
+        {"tool": "get_tickets", "outcome": "ticket 103: 20 x CC-HOOD-NAVY size M, bulk discount, no price named"},
+        {"tool": "get_cash_balance", "outcome": "checking $160.00"},
+        {"tool": "get_product_stock_and_price", "outcome": "size M: 8 on hand, needed 20, shortfall 12; cost $22, list $58, margin $36"},
+        {"tool": "list_vendors", "outcome": "Bulldog Print Co can ship, 5-day lead time"},
+        {"tool": "get_open_vendor_invoices", "outcome": "vendor 1 has no open invoices"},
+        {"tool": "prepare_payment_request", "outcome": "purchase order 12 x M: $264.00, balance after -$104.00, refused_insufficient_funds"}
+      ],
+      "safeguards_triggered": [
+        "2 repeated tool calls served from the run cache",
+        "purchase order flagged as insufficient funds (no negative balance allowed)"
+      ],
+      "human_approvals": [
+        {
+          "request_id": "4bda7c487f0249ca8c131d7552e3615e",
+          "kind": "purchase_order",
+          "ref_id": 1,
+          "payee": "Bulldog Print Co",
+          "amount": 264.0,
+          "decision": "declined",
+          "decided_by": "Antonio Chicchón",
+          "decided_at": "2026-10-14T22:21:03.321742Z",
+          "reason": "Insufficient cash: $264 required versus $160 available after paying invoice 501 and rent. No purchase commitment is authorized.",
+          "outcome": "no payment; checking stayed $160.00; ticket moved awaiting_approval -> in_progress"
+        }
+      ],
+      "cash_impact": 0.0,
+      "unresolved_issues": [
+        "Insufficient cash for the full 12-unit restock ($264 vs $160). The shop models no revenue, so funds cannot increase.",
+        "A smaller order (at most 7 x $22 = $154) would fit but needs a new agent run to prepare; none was run to avoid extra model usage.",
+        "The club's requested discount or price is unspecified, so no discount decision was made.",
+        "Customer Service was not called, so the Yale AI Club has no drafted reply.",
+        "The backend showed awaiting_approval for an unfundable request although the Boss said blocked (a status-mapping limitation)."
+      ]
+    }
+  ],
+  "cash_reconciliation": [
+    {"step": "start (after reset)", "change": 0.0, "balance": 3400.0},
+    {"step": "ticket 101: invoice 501 paid", "change": -840.0, "balance": 2560.0},
+    {"step": "ticket 102: rent lease 1 paid", "change": -2400.0, "balance": 160.0},
+    {"step": "ticket 103: purchase order declined (no payment)", "change": 0.0, "balance": 160.0}
+  ],
+  "proposed_not_executed": [
+    {"ticket": 103, "proposal": "purchase order 12 x CC-HOOD-NAVY M", "amount": 264.0, "outcome": "declined by Antonio Chicchón"},
+    {"ticket": 101, "proposal": "purchase order 1 x CC-TEE-WHITE S", "amount": 8.0, "outcome": "refused by prepare_payment_request (vendor had open invoice); never an approvable request"}
+  ],
+  "usage_total": {"model_requests": 44, "total_tokens": 144583}
+}

@@ -1,0 +1,8 @@
+# Campus Customs HW5 (Python 3.12+)
+fastmcp                          # MCP server (mcp_server/server.py) and stdio client used by agents and backend
+pydantic-ai-slim[openai,mcp]     # agent framework; OpenAI client used through the Portkey gateway
+python-dotenv                    # loads PORTKEY_API_KEY from .env
+fastapi                          # backend API (backend/main.py)
+uvicorn                          # ASGI server: from backend/, `uvicorn main:app --reload --port 8000`
+pytest                           # backend/tests (offline mock + real-MCP tests)
+httpx                            # FastAPI TestClient / async API tests

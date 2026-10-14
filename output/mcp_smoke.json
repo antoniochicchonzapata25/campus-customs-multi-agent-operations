@@ -1,0 +1,46 @@
+{
+  "description": "Problem 4 smoke tests: each Campus Customs MCP tool called by the vibe coder (Claude Code) through the project-level .mcp.json connection. Outputs are the exact JSON returned by the MCP server and were checked against data/campus_customs_new.db.",
+  "vibe_coder": "Claude Code",
+  "mcp_server": "campus-customs",
+  "mcp_config": ".mcp.json",
+  "database": "data/campus_customs_new.db",
+  "tested_on": "2026-10-14",
+  "tests": [
+    {
+      "ticket": 103,
+      "prompt": "Ticket 103: Yale AI Club wants 20 CC-HOOD-NAVY hoodies in size M with a bulk discount. Use the campus-customs MCP server to check how many we have in size M, the shortfall, and the unit cost, list price, and margin.",
+      "tool": "get_product_stock_and_price",
+      "mcp_tool_id": "mcp__campus-customs__get_product_stock_and_price",
+      "arguments": { "sku": "CC-HOOD-NAVY", "size": "M", "qty_needed": 20 },
+      "output": {"sku":"CC-HOOD-NAVY","name":"Basic Hoodie Big Yale","sizes":[{"size":"S","qty":4,"location":"Aisle A"},{"size":"M","qty":8,"location":"Aisle A"},{"size":"L","qty":14,"location":"Aisle A"},{"size":"XL","qty":6,"location":"Aisle A"}],"total_qty_all_sizes":32,"pricing":{"unit_cost":22,"list_price":58,"margin_per_unit_at_list":36},"requested_size":{"size":"M","qty_on_hand":8,"location":"Aisle A","qty_needed":20,"can_fill_from_stock":false,"shortfall":12}},
+      "db_check": "MATCH. inventory CC-HOOD-NAVY: S 4, M 8, L 14, XL 6 (all Aisle A); pricing: unit_cost 22.0, list_price 58.0. 58 - 22 = 36 margin; 20 - 8 = 12 shortfall."
+    },
+    {
+      "ticket": 101,
+      "prompt": "Ticket 101: Tauhid Zaman needs one CC-TEE-WHITE tee in size S. Use the campus-customs MCP server to check whether we can fill it from stock.",
+      "tool": "get_product_stock_and_price",
+      "mcp_tool_id": "mcp__campus-customs__get_product_stock_and_price",
+      "arguments": { "sku": "CC-TEE-WHITE", "size": "S", "qty_needed": 1 },
+      "output": {"sku":"CC-TEE-WHITE","name":"Classic Bulldog Tee","sizes":[{"size":"S","qty":0,"location":"Aisle B"},{"size":"M","qty":5,"location":"Aisle B"},{"size":"L","qty":3,"location":"Aisle B"},{"size":"XL","qty":2,"location":"Aisle B"}],"total_qty_all_sizes":10,"pricing":{"unit_cost":8,"list_price":28,"margin_per_unit_at_list":20},"requested_size":{"size":"S","qty_on_hand":0,"location":"Aisle B","qty_needed":1,"can_fill_from_stock":false,"shortfall":1}},
+      "db_check": "MATCH. inventory CC-TEE-WHITE: S 0, M 5, L 3, XL 2 (all Aisle B); pricing: unit_cost 8.0, list_price 28.0."
+    },
+    {
+      "ticket": 101,
+      "prompt": "Ticket 101: the size S tee is out of stock. Use the campus-customs MCP server to list all open vendor invoices, and tell me whether any are overdue and whether the vendor is blocked from shipping.",
+      "tool": "get_open_vendor_invoices",
+      "mcp_tool_id": "mcp__campus-customs__get_open_vendor_invoices",
+      "arguments": {},
+      "output": {"shop_date":"2026-08-31","open_invoice_count":1,"total_open_amount":840,"invoices":[{"invoice_id":501,"vendor_id":1,"vendor_name":"Bulldog Print Co","vendor_specialty":"apparel reprint","vendor_lead_days":5,"amount":840,"due_date":"2026-08-28","status":"open","description":"Rush reprint CC-TEE-WHITE S","is_overdue":true,"days_past_due":3,"vendor_blocked_from_shipping":true}]},
+      "db_check": "MATCH. desk.date_today 2026-08-31; invoices 501: vendor 1, 840.0, due 2026-08-28, open, 'Rush reprint CC-TEE-WHITE S'; vendors 1: Bulldog Print Co, apparel reprint, 5 lead days. 2026-08-31 minus 2026-08-28 = 3 days past due. Only one invoice exists, and it is open."
+    },
+    {
+      "ticket": 102,
+      "prompt": "Ticket 102: Elm City Properties emailed that shop rent is due in 2 days. Use the campus-customs MCP server to check lease 1 and confirm the rent amount, landlord, and when it is due.",
+      "tool": "get_lease_rent_status",
+      "mcp_tool_id": "mcp__campus-customs__get_lease_rent_status",
+      "arguments": { "lease_id": 1 },
+      "output": {"lease_id":1,"space_name":"Chapel Street shop","landlord":"Elm City Properties","monthly_rent":2400,"next_due":"2026-09-02","notes":null,"shop_date":"2026-08-31","days_until_due":2,"is_overdue":false},
+      "db_check": "MATCH. leases 1: Chapel Street shop, Elm City Properties, 2400.0, next_due 2026-09-02, notes NULL; desk.date_today 2026-08-31, so the rent is due in 2 days and is not overdue."
+    }
+  ]
+}

@@ -162,3 +162,23 @@ Three known limitations remain, and none of them blocks closing this problem:
 **Follow-up prompt:** none needed. The reflection is analysis of existing evidence, and nothing had to be implemented or rerun.
 
 **Closeout:** Problem 10 is complete. The Reflection tab answers all five assignment questions, ties every answer to tickets 101–103 and the Cash tab, and passed local validation. The ticket tabs, Cash tab, databases and audit trail are unchanged. One small limitation: the tab was checked structurally, not viewed in a browser.
+
+---
+
+## Problem 11: Submit to GitHub
+
+**Prompt (summarized):**
+> Final problem. Read the assignment and inspect the whole project and its Git state first. Before publishing anything, audit for secrets: check `git status`, branches, remotes, `.gitignore`, `.env`, `.mcp.json`, logs and outputs. Search files and Git history for keys without ever printing them, and stop and propose a fix if anything was exposed. Confirm every required deliverable, including both databases: the original unchanged, and the working copy at the final $160 with two payments. Make sure the README explains installing, configuring the Portkey key without publishing it, starting the MCP server, backend and dashboard, and resetting before a fresh run. Don't call the model, rerun tickets, approve payments, reset databases or change the audit trail. Then create a public repo (e.g. `campus-customs-multi-agent-operations`), commit, push, check the public URL works, and save it in `output/github_url.txt`.
+
+**What was done:**
+- **Audit, all clean:**
+  - There was no earlier Git history.
+  - The real key was not found in any file or in the staged content, binaries included.
+  - No `.env` file is published, and `.env.example` holds only placeholders.
+  - No local paths or email addresses appear in committed files.
+- **Added:** `.gitignore` and the root `README.md`.
+- **Privacy:** commits use the GitHub no-reply email instead of the personal address.
+- **Git ownership warning:** the folder belongs to another Windows account, so Git flagged it as unsafe. Each command was told to trust it explicitly, leaving the global Git config unchanged.
+- **Published:** a public repository with all 63 project files, both databases byte-identical to the local copies. The URL is in `output/github_url.txt`.
+
+**Follow-up prompt:** none needed. The audit was clean, so publishing went ahead as the prompt authorized. The only problem was Git's folder-ownership warning, solved without changing any settings or files.

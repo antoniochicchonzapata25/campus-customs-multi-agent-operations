@@ -510,5 +510,17 @@ The **Reflection** tab of `output/desk_tickets.html` answers the five Problem 10
 
 ---
 
-## 14. Sections to be added in later problems
-- GitHub submission (Problem 11)
+## 14. GitHub submission (Problem 11)
+
+**Public repository:** https://github.com/antoniochicchonzapata25/campus-customs-multi-agent-operations (also in `output/github_url.txt`).
+
+**Pre-publication audit:**
+- **No old history to leak:** the folder had no earlier Git history.
+- **The real Portkey key** was searched for, without displaying it, in every project file and in the staged content, binaries included. It was not found.
+- **Other secret patterns:** none found. No `.env` file is committed, and `.env.example` holds only a placeholder.
+- **Personal data:** no local paths or email addresses appear in any committed file. Commits use the GitHub no-reply address.
+
+**What's in the repository:**
+- Everything in the assignment's file layout, plus `README.md` (setup, key configuration, starting the MCP server, backend and dashboard, and the reset procedure) and `.gitignore`.
+- `.gitignore` excludes `.env`, `.venv/`, `node_modules/`, build output, caches, logs and the course instruction transcripts.
+- Both databases are included and byte-identical to the local copies. `campus_customs.db` is the unchanged original; `campus_customs_new.db` is the final Problem 9 state (checking $160.00, 2 payments).
